@@ -1,0 +1,16 @@
+{
+  "name": "port-prowler",
+  "version": "1.0.0",
+  "description": "Command-Line Port Scanner",
+  "repository": {
+    "type": "git",
+    "url": "git@gitea.kood.tech:georgkaasik/port-prowler.git"
+  },
+  "license": "GPL-3.0-only",
+  "author": "Georg Kaasik",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
