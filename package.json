@@ -9,8 +9,15 @@
   "license": "GPL-3.0-only",
   "author": "Georg Kaasik",
   "type": "module",
-  "main": "index.js",
+  "main": "port_prowler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chalk": "^6.0.0",
+    "@justjam2013/raw-socket": "^1.0.1"
+  },
+  "allowScripts": {
+    "@justjam2013/raw-socket@1.0.1": true
   }
 }
