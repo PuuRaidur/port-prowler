@@ -5,8 +5,12 @@ import chalk from "chalk"
 
 // gets the local IP address used to reach the target
 function getIP(ip) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const socket = dgram.createSocket("udp4")
+        socket.once("error", (err) => {
+            try { socket.close() } catch (e) {}
+            reject(err)
+        })
         socket.connect(1, ip, () => {
             const addr = socket.address().address
             socket.close()
@@ -72,18 +76,33 @@ export default async function stealthScan(ip, port, timeout) {
 
         // listen for incoming TCP responses
         socket.on("message", (buf, source) => {
-            // skip packets not from target
+            // skip packets not from target or too short
             if (source !== ip) return
-            // skip non-TCP packets
-            if (buf[9] !== 6) return
+            if (buf.length < 20 || buf[9] !== 6) return
             // parse IP header length, then TCP header
             const ihl = (buf[0] & 0x0f) * 4
+            if (buf.length < ihl + 20) return
             // verify response matches our probe
             if (buf.readUInt16BE(ihl) !== port) return           // source port = target port
             if (buf.readUInt16BE(ihl + 2) !== srcPort) return    // dest port = our source port
             // check TCP flags
             const flags = buf[ihl + 13]
-            if ((flags & 0x12) === 0x12) finish("open")     // SYN/ACK = open
+            if ((flags & 0x12) === 0x12) {
+                // open: build RST to tear down the half-open connection
+                const rst = Buffer.alloc(20)
+                rst.writeUInt16BE(srcPort, 0)                  // source port
+                rst.writeUInt16BE(port, 2)                     // destination port
+                rst.writeUInt32BE(buf.readUInt32BE(ihl + 8), 4) // seq = ack from SYN/ACK
+                rst.writeUInt32BE(0, 8)                        // ack number = 0
+                rst.writeUInt8(0x50, 12)                       // data offset = 5 (20 bytes)
+                rst.writeUInt8(0x04, 13)                       // flags = RST
+                rst.writeUInt16BE(0, 14)                       // window size
+                rst.writeUInt16BE(0, 16)                       // checksum (computed below)
+                rst.writeUInt16BE(0, 18)                       // urgent pointer = 0
+                raw.writeChecksum(rst, 16, raw.createChecksum(pseudoHeader, rst))
+                // send RST, then report open
+                socket.send(rst, 0, rst.length, ip, () => finish("open"))
+            }
             else if (flags & 0x04) finish("closed")          // RST = closed
         })
 
