@@ -52,6 +52,7 @@ node port_prowler.js 172.16.0.1 -p 80 -tcp -udp -f results.txt
 
 ## Known limitations
 
-- UDP scan sends an empty payload — ports with UDP services (e.g. DNS on 53) report `open|filtered` instead of `open` because services ignore empty packets. Nmap sends protocol-specific probes for comparison.
-- Stealth scan requires root privileges (raw sockets).
-- UDP-only mode cannot distinguish `filtered` from `open|filtered` without ICMP responses.
+- UDP scan sends protocol-specific probes on known ports (53, 67, 68, 69, 111, 123, 137, 161, 500, 1194, 1701, 2049, 5353); all other ports get an empty payload and report `open|filtered` because services ignore empty packets.
+- Some UDP probes are inherently limited: 68 (DHCP client) has no listener that responds, and 5353 (mDNS) replies are multicast so they are not received by a connected socket. 162 (SNMP trap) and 514 (syslog) are send-only protocols with no useful probe — these ports still report `open|filtered`.
+- Stealth scan requires elevated privileges (raw sockets).
+- UDP classification: `closed` on ICMP port-unreachable, `filtered` on other ICMP unreachable errors (e.g. admin-prohibited), `open|filtered` when there is no response. Silent firewall drops are indistinguishable from a silent open service, so they remain `open|filtered`.
