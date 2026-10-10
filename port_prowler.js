@@ -70,7 +70,7 @@ for (let i = 3; i < ARGS.length; i++) {
 
 // Checks post-parse validity
 if (ports === undefined || ports.length === 0 || ports.some(p => !Number.isInteger(p) || p < 0 || p > 65535)) {
-    console.log(chalk.red.bold("Error: incorrect utility usage"))
+    console.log(chalk.red.bold("Error: incorrect port arguments"))
     showHelp()
     process.exit(1)
 }
