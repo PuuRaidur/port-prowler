@@ -1,5 +1,6 @@
 import net from "node:net"
 import chalk from "chalk"
+import {showHelp} from "../utils.js"
 import tcpScan from "./tcp.js"
 import udpScan from "./udp.js"
 import stealthScan from "./stealth.js"
@@ -7,7 +8,8 @@ import stealthScan from "./stealth.js"
 // a scanning function for all 3 scan types
 export default async function scan(ip, ports, type) {
     if(!net.isIP(ip)) {
-        console.log(chalk.red.bold("Error: Incorrect IP address"))
+        console.log(chalk.red.bold("Error: Invalid IP address"))
+        showHelp()
         process.exit(1)
     }
     let report = ""
