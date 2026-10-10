@@ -1,4 +1,5 @@
 import fs from "node:fs"
+import net from "node:net"
 import chalk from "chalk"
 import {showHelp, parsePorts} from "./utils.js"
 import scan from "./scan/scan.js"
@@ -17,6 +18,11 @@ let file
 // Checks IP validity
 if (IP.startsWith("-")) {
     console.log(chalk.red.bold("Error: IP address must be present"))
+    showHelp()
+    process.exit(1)
+}
+else if (!net.isIP(IP)) {
+    console.log(chalk.red.bold("Error: Invalid IP address"))
     showHelp()
     process.exit(1)
 }
@@ -63,7 +69,7 @@ for (let i = 3; i < ARGS.length; i++) {
 }
 
 // Checks post-parse validity
-if (ports === undefined || ports.includes(NaN)) {
+if (ports === undefined || ports.length === 0 || ports.some(p => !Number.isInteger(p) || p < 0 || p > 65535)) {
     console.log(chalk.red.bold("Error: incorrect utility usage"))
     showHelp()
     process.exit(1)
