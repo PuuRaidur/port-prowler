@@ -21,8 +21,8 @@ if (IP.startsWith("-")) {
     showHelp()
     process.exit(1)
 }
-else if (!net.isIP(IP)) {
-    console.log(chalk.red.bold("Error: Invalid IP address"))
+else if (net.isIP(IP) !== 4) {
+    console.log(chalk.red.bold("Error: Invalid IP address (IPv4 required)"))
     showHelp()
     process.exit(1)
 }
