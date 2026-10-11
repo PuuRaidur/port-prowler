@@ -1,7 +1,8 @@
 # Port Prowler
 
 A command-line port scanner built with Node.js that supports TCP connect, UDP, and TCP SYN (stealth) scans.
-Can for example be used on Metasploitable 2 VM or your home router.
+
+It can, for example, be used on Metasploitable 2 VM or your home router. Read about policy [here](./POLICY.md)
 
 ## Setup
 
