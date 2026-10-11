@@ -17,7 +17,7 @@ let file
 
 // Checks IP validity
 if (IP.startsWith("-")) {
-    console.log(chalk.red.bold("Error: IP address must be present"))
+    console.log(chalk.red.bold("Error: IP address must be present (IPv4 required)"))
     showHelp()
     process.exit(1)
 }
