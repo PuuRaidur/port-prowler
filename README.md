@@ -1,6 +1,7 @@
 # Port Prowler
 
 A command-line port scanner built with Node.js that supports TCP connect, UDP, and TCP SYN (stealth) scans.
+Can for example be used on Metasploitable 2 VM or your home router.
 
 ## Setup
 
@@ -54,5 +55,6 @@ node port_prowler.js 172.16.0.1 -p 80 -tcp -udp -f results.txt
 
 - UDP scan sends protocol-specific probes on known ports (53, 67, 68, 69, 111, 123, 137, 161, 500, 1194, 1701, 2049, 5353); all other ports get an empty payload and report `open|filtered` because services ignore empty packets.
 - Some UDP probes are inherently limited: 68 (DHCP client) has no listener that responds, and 5353 (mDNS) replies are multicast so they are not received by a connected socket. 162 (SNMP trap) and 514 (syslog) are send-only protocols with no useful probe — these ports still report `open|filtered`.
-- Stealth scan requires elevated privileges (raw sockets).
 - UDP classification: `closed` on ICMP port-unreachable, `filtered` on other ICMP unreachable errors (e.g. admin-prohibited), `open|filtered` when there is no response. Silent firewall drops are indistinguishable from a silent open service, so they remain `open|filtered`.
+- Stealth scan requires elevated privileges (raw sockets).
+- UDP and Stealth scan are built to work with IPv4 address only, so the tool is designed to be IPv4-only.
