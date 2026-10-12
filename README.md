@@ -2,7 +2,7 @@
 
 A command-line port scanner built with Node.js that supports TCP connect, UDP, and TCP SYN (stealth) scans.
 
-It can, for example, be used on Metasploitable 2 VM or your home router. Read about policy [here](./POLICY.md)
+It can, for example, be used on Metasploitable 2 VM or your home router. Read about [Policy](./POLICY.md) and [Contributing](./CONTRIBUTING.md)
 
 ## Setup
 
